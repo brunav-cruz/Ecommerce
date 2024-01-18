@@ -13,7 +13,7 @@
   . venv/bin/activate
  ```
 
-- Install the dependecies of the project, following the command bellow:
+- Install the dependecies of the project, using the following command:
 
  ```
   pip install django django-debug-toolbar django-crispy-forms pillow
@@ -25,7 +25,7 @@
  python manage.py migrate
  ```
 
--Finally, you can start the project using the following comand:
+- Finally, you can start the project using the following comand:
 
  ```
  python manage.py runserver
