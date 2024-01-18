@@ -2,6 +2,7 @@ from django.db import models
 from PIL import Image
 import os
 from django.conf import settings
+from django.utils.text import slugify
 
 class Produto(models.Model):
     nome = models.CharField(max_length=255)
@@ -12,8 +13,6 @@ class Produto(models.Model):
         upload_to='produto_imagens/%Y/', blank=True, null=True)
     slug = models.SlugField(unique=True, blank=True, null=True)
     preco_marketing = models.FloatField(verbose_name='Preço')
-    preco_marketing_promocional = models.FloatField(
-        default=0, verbose_name='Preço Promo.')
     tipo = models.CharField(
         default='S',
         max_length=1,
@@ -22,6 +21,11 @@ class Produto(models.Model):
             ('V', 'Variável'), 
         )
     )
+
+
+    def get_preco_formatado(self):
+        return f'R$ {self.preco_marketing:.2f}'.replace('.', ',')
+    get_preco_formatado.short_description = 'Preço'
 
     @staticmethod
     def resize_image(img, new_width=800):
@@ -43,11 +47,11 @@ class Produto(models.Model):
         )
 
     def save(self, *args, **kwargs):
-        '''
+
         if not self.slug:
             slug = f'{slugify(self.nome)}'
             self.slug = slug
-        '''
+        
 
         super().save(*args, **kwargs)
 
@@ -64,7 +68,6 @@ class Variacao(models.Model):
     produto = models.ForeignKey(Produto, on_delete=models.CASCADE)
     nome = models.CharField(max_length=50, blank=True, null=True)
     preco = models.FloatField(verbose_name='preço')
-    preco_promocional = models.FloatField(default=0, verbose_name='preço promo.')
     estoque = models.PositiveIntegerField(default=1)
 
     def __str__(self):
